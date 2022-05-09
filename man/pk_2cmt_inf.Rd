@@ -2,10 +2,19 @@
 % Please edit documentation in R/pk_2cmt_inf.R
 \name{pk_2cmt_inf}
 \alias{pk_2cmt_inf}
-\title{Concentration predictions for 1-compartmental PK model, single or multiple infusions}
+\title{Concentration predictions for 2-compartmental PK model, single or multiple infusions}
 \usage{
-pk_2cmt_inf(t = c(0:24), dose = 100, tau = 12, t_inf = 1, CL = 3,
-  V = 30, Q = 2, V2 = 20, ruv = NULL)
+pk_2cmt_inf(
+  t = c(0:24),
+  dose = 100,
+  tau = 12,
+  t_inf = 1,
+  CL = 3,
+  V = 30,
+  Q = 2,
+  V2 = 20,
+  ruv = NULL
+)
 }
 \arguments{
 \item{t}{vector of time}
@@ -27,5 +36,5 @@ pk_2cmt_inf(t = c(0:24), dose = 100, tau = 12, t_inf = 1, CL = 3,
 \item{ruv}{residual error (list)}
 }
 \description{
-Concentration predictions for 1-compartmental PK model, single or multiple infusions
+Concentration predictions for 2-compartmental PK model, single or multiple infusions
 }

@@ -9,14 +9,15 @@
 convert_creat_unit <- function(
   value = NULL,
   unit_in = "mg/dL") {
-  if(class(value) == "list" && !is.null(value$value) && !is.null(value$unit)) {
+  if(inherits(value, "list") && !is.null(value$value) && !is.null(value$unit)) {
     unit_in <- value$unit
     value <- value$value
   }
-  if(!tolower(unit_in) %in% c("mg/dl", "micromol/l", "mumol/l")) {
-    stop("Input unit needs to be either mg/dL or micromol/L.")
+  allowed <- valid_units("scr")
+  if(! all(tolower(unit_in) %in% allowed)) {
+    stop(paste0("Input unit needs to be one of ", paste(allowed, collapse = " ")))
   }
-  if(tolower(unit_in) == "mg/dl") {
+  if(tolower(unit_in) %in% c("mg/dl", "mg_dl")) {
     out <- list(
       value = value * 88.42,
       unit = "micromol/L"

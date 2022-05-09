@@ -2,10 +2,39 @@
 % Please edit documentation in R/calc_ffm.R
 \name{calc_ffm}
 \alias{calc_ffm}
+\alias{ffm_janmahasatian_green}
+\alias{ffm_al_sallami}
+\alias{ffm_storset}
+\alias{ffm_bucaloiu}
+\alias{ffm_hume}
+\alias{ffm_james}
+\alias{ffm_garrow_webster}
 \title{Calculate fat-free mass}
 \usage{
-calc_ffm(weight = NULL, bmi = NULL, sex = NULL, height = NULL,
-  age = NULL, method = "green", digits = 1)
+calc_ffm(
+  weight = NULL,
+  bmi = NULL,
+  sex = NULL,
+  height = NULL,
+  age = NULL,
+  method = c("janmahasatian", "green", "al-sallami", "storset", "bucaloiu", "hume",
+    "james", "garrow_webster"),
+  digits = 1
+)
+
+ffm_janmahasatian_green(weight, sex, height = NULL, bmi = NULL)
+
+ffm_al_sallami(weight, sex, age, height = NULL, bmi = NULL)
+
+ffm_storset(weight, sex, height, age)
+
+ffm_bucaloiu(weight, sex, height, age)
+
+ffm_hume(weight, sex, height)
+
+ffm_james(weight, sex, height)
+
+ffm_garrow_webster(weight, sex, height)
 }
 \arguments{
 \item{weight}{total body weight in kg}
@@ -18,18 +47,31 @@ calc_ffm(weight = NULL, bmi = NULL, sex = NULL, height = NULL,
 
 \item{age}{age, only used for Storset equation}
 
-\item{method}{estimation method, either `green` (default), `holford`, or `storset`}
+\item{method}{estimation method, one of `janmahasatian` (default), `green`, `al-sallami`, `storset`, `bucaloiu`, `hume`, `james`, or `garrow_webster`.}
 
 \item{digits}{round to number of digits}
 }
+\value{
+Returns a list of the following elements:
+\item{value}{Fat-free Mass (FFM) in units of kg}
+\item{unit}{Unit describing FFM, (kg)}
+\item{method}{Method used to calculate FFF}
+}
 \description{
-Get an estimate of body-surface area based on weight, height, and sex (and age for Storset equation).
+Get an estimate of fat-free mass (FFM, in kg) based on weight, height, and sex (and age for Storset equation).
 }
 \details{
 References:
-`green`: Janmahasatian et al. Clin Pharmacokinet. 2005;44(10):1051-65)
+`janmahasatian`, `green`: Janmahasatian et al. Clin Pharmacokinet. 2005;44(10):1051-65)
 `al-sallami`: Al-Sallami et al. Clin Pharmacokinet 2015
 `storset`: Storset E et al. TDM 2016
+`bucaloiu`: Bucaloiu ID et al. Int J of Nephrol Renovascular Dis. 2011 (Morbidly obese females)
+`hume`: Hume R. J Clin Pathol 1966
+`james`: James WPT et al. Research on obesity: a report of the DHSS/MRC Group 1976
+`garrow_webster`: Garrow JS, Webster J. Quetelet's index (W/H2) as a measure of fatness. Int J Obesity 1984
+
+Overview:
+- Sinha J, Duffull1 SB, Al-Sallami HS. Clin Pharmacokinet 2018. https://doi.org/10.1007/s40262-017-0622-5
 }
 \examples{
 calc_ffm(weight = 70, bmi = 25, sex = "male")

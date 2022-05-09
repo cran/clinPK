@@ -1,4 +1,4 @@
-#' Concentration predictions for 1-compartmental PK model, single or multiple bolus doses
+#' Concentration predictions for 2-compartmental PK model, single or multiple bolus doses
 #'
 #' @param t vector of time
 #' @param dose dose
@@ -23,7 +23,7 @@ pk_2cmt_bolus <- function(
   ) {
   k <- CL / V
   tmp <- c()
-  dat <- data.frame(cbind(t = t, dv = 0))
+  dat <- data.frame(t = t, dv = 0)
   t_dos <- t %% tau
   n_dos <- floor(t/tau)
   unq_dos <- unique(n_dos) + 1

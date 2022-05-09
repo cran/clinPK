@@ -2,62 +2,160 @@
 % Please edit documentation in R/calc_egfr.R
 \name{calc_egfr}
 \alias{calc_egfr}
+\alias{egfr_wright}
+\alias{egfr_jelliffe}
+\alias{egfr_jelliffe_unstable}
+\alias{egfr_mdrd}
+\alias{egfr_ckd_epi}
+\alias{egfr_ckd_epi_as_2021}
+\alias{egfr_cockcroft_gault_sci}
+\alias{egfr_cockcroft_gault}
+\alias{egfr_malmo_lund}
+\alias{egfr_bedside_schwartz}
+\alias{egfr_schwartz}
 \title{Calculate eGFR}
 \usage{
-calc_egfr(method = "cockcroft_gault", sex = NULL, age = NULL,
-  scr = NULL, scr_unit = NULL, scr_assay = NULL, race = "other",
-  weight = NULL, height = NULL, bsa = NULL, preterm = FALSE,
-  ckd = FALSE, times = NULL, bsa_method = "dubois", relative = NULL,
-  unit_out = "mL/min", ...)
+calc_egfr(
+  method = "cockcroft_gault",
+  sex = NULL,
+  age = NULL,
+  scr = NULL,
+  scr_unit = NULL,
+  race = "other",
+  weight = NULL,
+  height = NULL,
+  bsa = NULL,
+  preterm = FALSE,
+  ckd = FALSE,
+  times = NULL,
+  bsa_method = "dubois",
+  relative = NULL,
+  unit_out = "mL/min",
+  verbose = TRUE,
+  min_value = NULL,
+  max_value = NULL,
+  fail = TRUE,
+  ...
+)
+
+egfr_wright(age, bsa, sex, scr)
+
+egfr_jelliffe(age, sex, bsa, scr)
+
+egfr_jelliffe_unstable(weight, times, scr, age, sex)
+
+egfr_mdrd(sex, race, scr, age, use_race, original_expression)
+
+egfr_ckd_epi(sex, race, scr, age, use_race)
+
+egfr_ckd_epi_as_2021(sex, scr, age)
+
+egfr_cockcroft_gault_sci(sex, age, scr, weight)
+
+egfr_cockcroft_gault(sex, age, scr, weight)
+
+egfr_malmo_lund(sex, age, scr)
+
+egfr_bedside_schwartz(age, height, scr, verbose)
+
+egfr_schwartz(age, preterm, sex, height, scr)
 }
 \arguments{
-\item{method}{eGFR estimation method, choose from `cockcroft_gault`, `cockcroft_gault_ideal`, `mdrd`, `ckd_epi`, malmo_lund_revised`, `schwartz`, `jelliffe`, `jellife_unstable`, `wright`}
+\item{method}{eGFR estimation method, choose from `cockcroft_gault`, `cockcroft_gault_ideal`, 
+`cockcroft_gault_adjusted`, `cockcroft_gault_adaptive`, `mdrd`, 
+`mdrd_ignore_race`, `mdrd_original`, `mdrd_original_ignore_race`, 
+`ckd_epi`, `ckd_epi_ignore_race`, `ckd_epi_as_2021`,
+`malmo_lund_revised`, `schwartz`, `jelliffe`, `jellife_unstable`, `wright`.}
 
 \item{sex}{sex}
 
-\item{age}{age}
+\item{age}{age, in years}
 
 \item{scr}{serum creatinine (mg/dL)}
 
 \item{scr_unit, }{`mg/dL` or `micromol/L` (==`umol/L`)}
 
-\item{scr_assay, }{`jaffe` or `enzymatic` or `idms`}
+\item{race}{`black` or `other`, Required for CKD-EPI and MDRD methods for estimating GFR. 
+To use these methods without race, use `method = "ckd_epi_ignore_race"`,  `method = "ckd_epi_as_2021"`,
+`method = "mdrd_ignore_race"` or `method = "mdrd_original_ignore_race"`.
+See Note section below for important considerations when using race as a predictive factor in eGFR.}
 
-\item{race}{`black` or `other`}
+\item{weight}{weight, in `kg`}
 
-\item{weight}{weight}
-
-\item{height}{height, only relevant when converting to/from BSA-relative unit}
+\item{height}{height, in `cm`, used for converting to/from BSA-normalized units.}
 
 \item{bsa}{body surface area}
 
-\item{preterm}{is patient preterm?}
+\item{preterm}{is patient preterm? Used for Schwartz method.}
 
-\item{ckd}{chronic kidney disease? (Schwartz equations only)}
+\item{ckd}{chronic kidney disease? Used for Schwartz method.}
 
-\item{times}{vector of sampling times for creatinine (only used in Jelliffe equation for unstable patients)}
+\item{times}{vector of sampling times (in days!) for creatinine (only used in Jelliffe equation for unstable patients)}
 
-\item{bsa_method}{BSA estimation method, see `bsa()` for details}
+\item{bsa_method}{BSA estimation method, see `calc_bsa()` for details}
 
 \item{relative}{`TRUE`/`FALSE`. Report eGFR as per 1.73 m2? Requires BSA if re-calculation required. If `NULL` (=default), will choose value typical for `method`.}
 
 \item{unit_out}{`ml/min` (default), `L/hr`, or `mL/hr`}
 
-\item{...}{arguments passed on}
+\item{verbose}{verbosity, show guidance and warnings. `TRUE` by default}
+
+\item{min_value}{minimum value (`NULL` by default). The cap is applied in the same unit as the `unit_out`.}
+
+\item{max_value}{maximum value (`NULL` by default). The cap is applied in the same unit as the `unit_out`.}
+
+\item{fail}{invoke `stop()` if not all covariates available?}
+
+\item{...}{arguments passed on to `calc_abw` or `calc_dosing_weight`}
+
+\item{use_race}{whether to include race as a factor in the calculation (TRUE
+or FALSE); see note}
+
+\item{original_expression}{whether the MDRD equation should use the 2001 
+coefficient (TRUE) or the 2006 coefficient (FALSE), which was updated for 
+standardization of the creatinine assay.}
 }
 \description{
-Calculate the estimated glomerulal filtration rate (an estimate of renal function) based on measured serum creatinine using one of the following approaches:
-- Cockcroft-Gault (using weight, ideal body weight, or adjusted body weight)
-- Revised Lund-Malmo
-- Modification of Diet in Renal Disease study (MDRD)
-- Schwartz
-- Schwartz revised
-- Jelliffe
-- Jelliffe (for unstable renal function)
-- Wright
+Calculate the estimated glomerular filtration rate (an indicator of renal 
+function) based on measured serum creatinine using one of the following 
+approaches:
+\itemize{
+  \item Cockcroft-Gault (using weight, ideal body weight, or adjusted body weight)
+  \item C-G spinal cord injury (using correction factor of 0.7, representing 
+    median correction point reported in the original publication (parapalegic
+    patients: 0.8; tetrapalegic patients: 0.6))
+  \item Revised Lund-Malmo
+  \item Modification of Diet in Renal Disease study (MDRD; 
+    with or without consideration of race, using either the original equation 
+    (published 2001) or the equation updated to reflect serum creatinine 
+    assay standardization (2006))
+  \item CKD-EPI (with or without consideration of race, or 2021 re-fit without race)
+  \item Schwartz
+  \item Schwartz revised / bedside
+  \item Jelliffe
+  \item Jelliffe for unstable renal function. Note that the 15% reduction in 
+    P_adj recommended for hemodialysis patients is not included in this 
+    implementation.
+  \item Wright equation for eGFR in cancer patients, with creatinine measured
+    using the Jaffe assay.
 }
-\details{
 Equations for estimation of eGFR from Cystatin C concentrations are available from the `calc_egfr_cystatin()` function.
+}
+\note{
+The MDRD and CKD-EPI equations use race as a factor in estimation of GFR. Racism has
+  historically been and continues to be a problem in medicine, with racialized patients
+  experiencing poorer outcomes. Given this context, the use of race in clinical algorithms
+  should be considered carefully (\href{https://www.nejm.org/doi/10.1056/NEJMms2004740}{Vyas et al., NEJM (2020)}).
+  Provided here are versions of the CKD-EPI and MDRD equations that do not consider the race
+  of the patient. Removing race from GFR estimation may lead to worse outcomes for Black patients 
+  in some contexts (\href{https://www.thelancet.com/journals/lanonc/article/PIIS1470-2045(21)00377-6/fulltext}{Casal et al., The Lancet (2021)}). 
+  On the other hand, including race in GFR estimation may also prevent Black patients 
+  from obtaining procedures like kidney transplants
+  ({\href{https://pubmed.ncbi.nlm.nih.gov/33443583/}{Zelnick, et al. JAMA Netw Open. (2021)}}).
+  In 2021, the NKF/ASN Task Force on Reassessing the Inclusion of Race in Diagnosing Kidney Diseases
+  published revised versions of the CKD-EPI equations refit on the original data but with race excluded, 
+  which may produce less biased estimates 
+  (\href{https://www.nejm.org/doi/full/10.1056/NEJMoa2102953}{Inker, et al., NEJM (2021)}).
 }
 \examples{
 calc_egfr(sex = "male", age = 50, scr = 1.1, weight = 70)
@@ -68,5 +166,21 @@ calc_egfr(sex = "male", age = 50, scr = c(1.1, 0.8),
 calc_egfr(sex = "male", age = 50, scr = c(1.1, 0.8),
   weight = 70, height = 170, method = "jelliffe_unstable")
 calc_egfr(sex = "male", age = 50, scr = 1.1,
-  weight = 70, bsa = 1.6, method = "malmo_lund_rev", relative = FALSE)
+  weight = 70, bsa = 1.6, method = "malmo_lund_revised", relative = FALSE)
+}
+\references{
+\itemize{
+  \item Cockcroft-Gault: \href{https://pubmed.ncbi.nlm.nih.gov/1244564/}{Cockcroft & Gault, Nephron (1976)}
+  \item Cockcroft-Gault for spinal cord injury: \href{https://pubmed.ncbi.nlm.nih.gov/6835689/}{Mirahmadi et al., Paraplegia (1983)}
+  \item Revised Lund-Malmo: \href{https://pubmed.ncbi.nlm.nih.gov/24334413/}{Nyman et al., Clinical Chemistry and Laboratory Medicine (2014)}
+  \item MDRD: \href{https://pubmed.ncbi.nlm.nih.gov/11706306/}{Manjunath et al., Curr. Opin. Nephrol. Hypertens. (2001)} 
+    and \href{https://academic.oup.com/clinchem/article/53/4/766/5627682}{Levey et al., Clinical Chemistry (2007)}. (See Note.)
+  \item CKD-EPI: \href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2763564/}{Levey et al., Annals of Internal Medicine (2009)}. (See Note.)
+  \item CKD-EPI (2021): \href{https://www.nejm.org/doi/full/10.1056/NEJMoa2102953}{Inker, et al., NEJM (2021)}.
+  \item Schwartz: \href{https://pubmed.ncbi.nlm.nih.gov/951142/}{Schwartz et al., Pediatrics (1976)}
+  \item Schwartz revised / bedside: \href{https://pubmed.ncbi.nlm.nih.gov/19158356/}{Schwartz et al., Journal of the American Society of Nephrology (2009)}
+  \item Jelliffe: \href{https://pubmed.ncbi.nlm.nih.gov/4748282/}{Jelliffe, Annals of Internal Medicine (1973)}
+  \item Jelliffe for unstable renal function: \href{https://pubmed.ncbi.nlm.nih.gov/12169862/}{Jelliffe, American Journal of Nephrology (2002)}
+  \item Wright: \href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2363765/}{Wright et al., British Journal of Cancer (2001)}
+}
 }

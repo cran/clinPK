@@ -1,6 +1,3 @@
-[![Build Status](https://travis-ci.org/ronkeizer/clinPK.svg?branch=master)](https://travis-ci.org/ronkeizer/clinPK)
-[![codecov](https://codecov.io/gh/ronkeizer/clinPK/branch/master/graph/badge.svg)](https://codecov.io/gh/ronkeizer/clinPK)
-
 # clinPK
 
 Equations and tools for clinical pharmacokinetics
@@ -8,11 +5,12 @@ Equations and tools for clinical pharmacokinetics
 ## Miscellaneous functions
 
 - `nca()`: Non-compartmental PK analysis, e.g. AUC, half-life, etc.
-- `calc_kel_single_tdm()`: calculate elimination rate (for linear 1-cmt model) based on single TDM sample and provided volume of distribution.
+- `calc_kel_single_tdm()`: calculate elimination rate based on single TDM sample and provided volume of distribution (assuming linear 1-cmt model).
+- `calc_kel_double_tdm()`: calculate elimination rate and other PK parameters based on two timed TDM samples (assuming on linear 1-cmt model).
 - `calc_t12()`: calculate effective half-life based on two TDM points.
 - `calc_amts_for_conc()`: Calculate the amounts in all compartments in a compartmental PK system based on a given concentration in the central compartment, and assuming steady state.
 - `find_nearest_dose()`: Find nearest available dose based on smallest available dosing unit
-- `find_nearest_interval()`: Find nearest (or nearest higher / nearest lower) dosing interval 
+- `find_nearest_interval()`: Find nearest (or nearest higher / nearest lower) dosing interval
 
 ## Anthropomorphic equations
 
@@ -22,6 +20,7 @@ Equations and tools for clinical pharmacokinetics
 - `calc_ibw()`: Ideal body weight, using various equations for children and adults
 - `calc_lbw()`: Lean body weight
 - `calc_abw()`: Adjusted body weight (for obese patients)
+- `calc_dosing_weight()`: Dosing weight
 - `pct_weight_for_age()`: calculate percentile of weight given age (for kids <= 10 yrs)
 - `pct_height_for_age()`: calculate percentile of height given age (for kids <= 19 yrs)
 - `pct_bmi_for_age()`: calculate percentile of height given age (for kids <= 19 yrs)
@@ -32,6 +31,7 @@ Equations and tools for clinical pharmacokinetics
 - `calc_egfr_cystatin()`: eGFR calculation from Cystatin C concentrations using various equations (Grubb, Larsson)
 - `calc_creat()`: mean serum creatinine for children and adults (given age and sex)
 - `calc_creat_neo()`: typical serum creatinine for neonates given post-natal age
+- `calc_aki_stage`: detect and calculate stage of acute kidney injury based on serum creatinine history, based on various classification systems (RIFLE, pRIFLE, KDIGO)
 - `convert_creat_assay()`: convert between various creatinine assays (Jaffe, IDMS, etc)
 - `convert_creat_unit()`: convert between creatinine units (mmol/L, mg/dL)
 
@@ -39,6 +39,8 @@ Equations and tools for clinical pharmacokinetics
 
 - `kg2lbs()`: kg to pounds
 - `lbs2kg()`: pounds to kg
+- `kg2oz()`: kg to ounces
+- `oz2kg()`: ounces to kg
 - `weight2kg()`: any weight unit to kg
 - `cm2inch()`: cm to inches
 - `inch2cm()`: inches to cm
@@ -64,13 +66,19 @@ Functions to simulate concentrations for linear PK models.
 | `pk_1cmt_bolus_cmin_ss()` | 1 | bolus | steady state | Cmin |
 | `pk_1cmt_bolus_cmax_ss()` | 1 | bolus | steady state | Cmax |
 | `pk_1cmt_t12()` | 1 | - | - | half-life |
-| `pk_1cmt_oral()` | 1 | oral | - | concentration | 
+| `pk_1cmt_oral()` | 1 | oral | - | concentration |
 | `pk_2cmt_bolus()` | 2 | bolus | single/multi dose | concentration table |
 | `pk_2cmt_bolus_ss()` | 2 | bolus | steady state | concentration table |
 | `pk_2cmt_bolus_cmin_ss()` | 2 | bolus | steady state | Cmin |
 | `pk_2cmt_bolus_cmax_ss()` | 2 | bolus | steady state | Cmax |
 | `pk_2cmt_t12()` | 2 | - | - | terminal half-life |
 | `pk_2cmt_t12_interval()` | 2 | - | - | effective half-life in given interval |
+
+## PK steady state equations
+
+- `accumulation_ratio()`: calculate the accumulation ratio for given halflife or elimination rate and dosing interval
+- `fraction_of_ss()`: calculate fraction of steady state reached after certain time or number of doses
+- `time_to_ss()`: calculate time to steady state in time units or number of doses
 
 ## Dose / TDM calculations
 
@@ -86,6 +94,6 @@ Functions to calculate the dose expected to achieve a specific target exposure.
 | `pk_1cmt_bolus_dose_for_cmax` | 1 | bolus | cmax | dose |
 | `pk_2cmt_inf_dose_for_cmax()` | 2 | infusion | cmax | dose |
 | `pk_2cmt_bolus_dose_for_cmax()` | 2 | bolus | cmax | dose |
+| `pk_1cmt_inf_dose_for_range()` | 1 | infusion | auc/cmin + conc range | dose |
 | `dose2auc()` | 1 | - | auc | auc |
 | `auc2dose()` | 1 | - | auc | dose |
-

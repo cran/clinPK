@@ -2,25 +2,32 @@
 % Please edit documentation in R/calc_ibw.R
 \name{calc_ibw}
 \alias{calc_ibw}
-\title{Calculate ideal body weight for children and adults}
+\title{Calculate ideal body weight in kg for children and adults}
 \usage{
-calc_ibw(weight = NULL, height = NULL, age = NULL, sex = "male",
-  method_children = "standard", method_adults = "devine", digits = NULL)
+calc_ibw(
+  weight = NULL,
+  height = NULL,
+  age = NULL,
+  sex = "male",
+  method_children = "standard",
+  method_adults = "devine"
+)
 }
 \arguments{
-\item{weight}{weight in kg, can be vector}
+\item{weight}{weight in kg}
 
-\item{height}{height in cm, can be vector}
+\item{height}{height in cm}
 
-\item{age}{age in years, can be vector}
+\item{age}{age in years}
 
-\item{sex}{either `male` or `female`, can be vector}
+\item{sex}{sex}
 
-\item{method_children}{method to use for children >1 and <18 years. Choose from `standard`, `mclaren` (McLaren DS, Read WWC. Lancet. 1972;2:146-148.), `moore` (Moore DJ et al. Nutr Res. 1985;5:797-799), `bmi` (), `ada` (American Dietary Association)}
+\item{method_children}{method to use for children >1 and <18 years. Currently
+`"standard"` is the only method that is supported.}
 
-\item{method_adults}{method to use for >=18 years. Choose from `devine` (default, Devine BJ. Drug Intell Clin Pharm. 1974;8:650-655).}
-
-\item{digits}{number of decimals (can be NULL to for no rounding)}
+\item{method_adults}{method to use for >=18 years. Currently `"devine"` is
+the only method that is supported (Devine BJ. Drug Intell Clin Pharm.
+1974;8:650-655).}
 }
 \description{
 Get an estimate of ideal body weight. This function allows several commonly used equations
@@ -37,7 +44,7 @@ Equations:
     IBW (male) = 39 + (2.27 x height in inches over 5 feet)
     IBW (female) = 42.2 + (2.27 x height in inches over 5 feet)
 
-Methods not implemented yet:
+  Methods not implemented yet:
   McLaren: IBW =
     - step1:   x = 50th percentile height for given age
     - step2: IBW = 50th percentile weight for x on weight-for-height scale

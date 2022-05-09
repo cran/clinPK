@@ -4,8 +4,14 @@
 \alias{calc_lbw}
 \title{Calculate lean body weight}
 \usage{
-calc_lbw(weight = NULL, bmi = NULL, sex = NULL, height = NULL,
-  method = "green", digits = 1)
+calc_lbw(
+  weight = NULL,
+  bmi = NULL,
+  sex = NULL,
+  height = NULL,
+  method = "green",
+  digits = 1
+)
 }
 \arguments{
 \item{weight}{total body weight in kg}
@@ -20,8 +26,13 @@ calc_lbw(weight = NULL, bmi = NULL, sex = NULL, height = NULL,
 
 \item{digits}{round to number of digits}
 }
+\value{
+Returns a list of the following elements:
+\item{value}{Lean Body Weight (LBW) in units of kg}
+\item{unit}{Unit describing LBW, (kg)}
+}
 \description{
-Get an estimate of lean body weight (LBW) based on weight, height, and sex.
+Get an estimate of lean body weight (LBW, in kg) based on weight, height, and sex.
 }
 \details{
 Note: technically not the same as fat-free mass, although difference is small.

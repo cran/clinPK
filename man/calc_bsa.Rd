@@ -4,7 +4,11 @@
 \alias{calc_bsa}
 \title{Calculate body surface area}
 \usage{
-calc_bsa(weight = NULL, height = NULL, method = "dubois")
+calc_bsa(
+  weight = NULL,
+  height = NULL,
+  method = c("dubois", "mosteller", "haycock", "gehan_george", "boyd")
+)
 }
 \arguments{
 \item{weight}{weight}
@@ -13,8 +17,13 @@ calc_bsa(weight = NULL, height = NULL, method = "dubois")
 
 \item{method}{estimation method, choose from `dubois`, `mosteller`, `haycock`, `gehan_george`, `boyd`}
 }
+\value{
+Returns a list of the following elements:
+\item{value}{Body Surface Area (BSA) in units of m2}
+\item{unit}{Unit describing BSA, (m2)}
+}
 \description{
-Get an estimate of body-surface area based on weight and height
+Get an estimate of body-surface area (in m2) based on weight and height
 }
 \examples{
 calc_bsa(weight = 70, height = 170)
