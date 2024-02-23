@@ -1,3 +1,14 @@
+# clinPK 0.13.0
+
+## Major changes
+- Added support for converting bilirubin and albumin units
+- Added support for Calvert equation for carboplatin
+- Added function for grading neutropenia
+
+## Minor updates
+- Added support for Hoek eGFR method
+- Vectorize `weight2kg()` over both units and values
+
 # clinPK 0.11.1
 
 ## Major changes
@@ -15,3 +26,7 @@
 - various minor fixes and updates
 - various documentation updates
 - added many unit tests, increase overall coverage to >86%
+
+# clinPK 0.9.0
+
+Initial CRAN version.

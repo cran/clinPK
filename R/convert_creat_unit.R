@@ -1,32 +1,18 @@
 #' Convert creatinine to different unit
 #'
 #' @param value serum creatinine in either mg/dL or micromol/L
-#' @param unit_in unit, either `mg/dL` or `micromol/L`
+#' @param unit_in,unit_out unit, either `mg/dL` or `micromol/L`
 #' @examples
-#' convert_creat_unit(1)
-#' convert_creat_unit(88.42, unit_in = "micromol/l")
+#' convert_creat_unit(1, "mg/dL", "micromol/l")
+#' convert_creat_unit(88.42, "micromol/l", "mg/dL")
 #' @export
-convert_creat_unit <- function(
-  value = NULL,
-  unit_in = "mg/dL") {
-  if(inherits(value, "list") && !is.null(value$value) && !is.null(value$unit)) {
-    unit_in <- value$unit
-    value <- value$value
-  }
-  allowed <- valid_units("scr")
-  if(! all(tolower(unit_in) %in% allowed)) {
-    stop(paste0("Input unit needs to be one of ", paste(allowed, collapse = " ")))
-  }
-  if(tolower(unit_in) %in% c("mg/dl", "mg_dl")) {
-    out <- list(
-      value = value * 88.42,
-      unit = "micromol/L"
-    )
-  } else {
-    out <- list(
-      value = value / 88.42,
-      unit = "mg/dL"
-    )
-  }
-  return(out)
+convert_creat_unit <- function(value,
+                               unit_in = valid_units("scr"),
+                               unit_out = valid_units("scr")) {
+  unit_in <- tolower(unit_in)
+  unit_out <- tolower(unit_out)
+  unit_in <- match.arg(unit_in, several.ok = TRUE)
+  unit_out <- match.arg(unit_out)
+
+  convert_conc_unit(value, unit_in, unit_out, 113.12)
 }
